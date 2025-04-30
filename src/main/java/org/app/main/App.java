@@ -128,7 +128,7 @@ public class App implements Serializable {
                         "el.dispatchEvent(new Event('input', { bubbles: true }));" +
                         "el.dispatchEvent(new Event('change', { bubbles: true }));" +
                         "el.dispatchEvent(new Event('blur', { bubbles: true }));",
-                driver.findElement(elements.leftSideBetInput), String.format("%.02f", 200.00));
+                driver.findElement(elements.leftSideBetInput), String.format("%.02f", 400.00));
 
         // Right side bet stake input
         js.executeScript(
@@ -164,7 +164,7 @@ public class App implements Serializable {
                         try {
                             if (!clicked.get() && targetReached(button,
                                     this.ORIGINAL_TARGET,
-                                    this.ORIGINAL_TARGET + 200.0)) {
+                                    this.ORIGINAL_TARGET + 10.0)) {
 
                                 this.currentScore += this.ORIGINAL_TARGET;
 

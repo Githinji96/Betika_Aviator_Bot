@@ -8,7 +8,7 @@ import java.util.*;
 public interface Elements {
     By demoPlayBtn = By.className("purple");
 
-    By placedBetsButton = By.xpath("//button[contains(@class, 'tab') and contains(text(), 'My Bets')]");
+    By placedBetsButton = By.xpath("//button[contains(@class, 'tab') and contains(text(), 'Previous')]");
 
     By placedBets = By.xpath("//app-bet-item[contains(@class, 'ng-star-inserted')]");
 
