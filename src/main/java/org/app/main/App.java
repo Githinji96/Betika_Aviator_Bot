@@ -71,55 +71,8 @@ public class App implements Serializable {
             // Type in the odds
             js.executeScript("arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input'));", driver.findElement(elements.leftSideBetInput), String.format("%.02f", this.ORIGINAL_TARGET));
 
-/*            // click auto bet tab
-//            driver.findElement(elements.leftSideAutoBetSwitch).click();
-
-            // Set the bet mode to auto cash out
-//            driver.findElement(elements.leftSideCashOutCheckMark).click();
-
-            // Key in the odds
-            js.executeScript("arguments[0].setAttribute('value','');" +
-                            "arguments[0].value = ''; arguments[0].dispatchEvent(new Event('input')); " + // Clear first
-                            "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input'));",
-                    driver.findElement(elements.leftSideOddInput),
-                    String.format("%.02f", this.LEFT_SIDE_ODDS)
-            );*/
         }
 
-       /* WebElement rightSideBetInput = wait.until(ExpectedConditions.visibilityOfElementLocated(elements.rightSideBetInput));
-//        if (hasFlownOrCanPlaceBet(rightSideBetInput)) { //place left side bet
-//            // Type in the stake
-//            js.executeScript(
-//                    "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input'));",
-//                    driver.findElement(elements.rightSideBetInput),
-//                    String.format("%.02f", this.ORIGINAL_TARGET)
-//            );
-//
-//            // click auto bet tab
-//            driver.findElement(elements.rightSideAutoBetSwitch).click();
-//
-//            // Set the bet mode to auto cash out
-//            driver.findElement(elements.rightSideCashOutCheckMark).click();
-//
-//            // Key in the odds
-//            js.executeScript("arguments[0].setAttribute('value','');" +
-//                            "arguments[0].value = ''; arguments[0].dispatchEvent(new Event('input')); " + // Clear first
-//                            "arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input'));",
-//                    driver.findElement(elements.rightSideOddInput),
-//                    String.format("%.02f", this.RIGHT_SIDE_ODDS)
-//            );
-//
-//            for (WebElement el : driver.findElements(elements.betBtns)) {
-//                el.click();
-//            }
-//        }
-//        while (this.inputTagHasNoValue(driver.findElement(elements.leftSideOddInput),
-//                String.valueOf(this.LEFT_SIDE_ODDS)) ||
-//                this.inputTagHasNoValue(driver.findElement(elements.rightSideOddInput),
-//                        String.format("%.02f", this.RIGHT_SIDE_ODDS))
-//        ) {
-//            Thread.sleep(1000);
-//        }*/
 
         // Left side bet stake input
         js.executeScript("let el = arguments[0];" +
