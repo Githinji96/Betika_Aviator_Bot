@@ -1,42 +1,81 @@
-package org.app.main;
+package org.app.mains;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import org.app.main.Elements;
 import org.openqa.selenium.*;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.*;
 
-import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class App implements Serializable {
-
-
+public class AppTest {
+    String USERNAME = "oauth-bonfacegithinji64-e7117";
+    String ACCESS_KEY = "6a142b5e-2a7e-440c-83bf-1e5bcc7a51da";
+    String SAUCE_URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.eu-central-1.saucelabs.com:443/wd/hub";
+    private WebDriver driver;
+    private WebDriverWait wait;
+    private JavascriptExecutor js;
     private static final double ORIGINAL_TARGET = 200.0;
-
     private static final String URL = "https://www.betika.com/en-ke/aviator?next=%2Faviator";
-
-    private double profitTarget = ORIGINAL_TARGET;
-
+    public static Elements elements;
     private double currentScore = 0.0;
 
-    private static Elements elements;
+    @Parameters("browser")
+    @BeforeClass
+    public void setUp( String browserName) {
 
-    private final WebDriver driver;
-    private final WebDriverWait wait;
-    private final JavascriptExecutor js;
+        MutableCapabilities sauceOptions = new MutableCapabilities();
+        sauceOptions.setCapability("build", "selenium-build-71ZG9");
+        sauceOptions.setCapability("name", " Tests in multiple environments");
+        sauceOptions.setCapability("username","oauth-bonfacegithinji64-e7117");
+        sauceOptions.setCapability("access-key","1c10c32b-54b9-4518-aa41-a796c1add8eb");
+        sauceOptions.setCapability("seleniumVersion", "4.30.0");
+        sauceOptions.setCapability("tags","w3c-chrome-tests");
 
-    public App() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        MutableCapabilities options;
+        if (browserName.equalsIgnoreCase("firefox")) {
+            FirefoxOptions firefoxOptions = new FirefoxOptions();
+            firefoxOptions.setCapability("platformName", "Windows 11");
+            firefoxOptions.setCapability("browserVersion", "latest");
+            firefoxOptions.setCapability("sauce:options", sauceOptions);
+            options = firefoxOptions;
+        } else if (browserName.equalsIgnoreCase("edge")) {
+            EdgeOptions edgeOptions = new EdgeOptions();
+            edgeOptions.setCapability("platformName", "macOS 13");
+            edgeOptions.setCapability("browserVersion", "latest");
+            edgeOptions.setCapability("sauce:options", sauceOptions);
+            options = edgeOptions;
+        } else {
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.setCapability("platformName", "Linux");
+            chromeOptions.setCapability("browserVersion", "latest");
+            chromeOptions.setCapability("sauce:options", sauceOptions);
+            options = chromeOptions;
+        }
+
+        try {
+            driver = new RemoteWebDriver(new URL(SAUCE_URL), options);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+        //  driver = BrowserFactory.getDriver(browserName);
         js = (JavascriptExecutor) driver;
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         elements = new Elements();
+
         navigateToGameBoard();
     }
 
@@ -47,10 +86,11 @@ public class App implements Serializable {
         driver.switchTo().frame(iframe);
     }
 
-    public void run() {
+    @Test
+    public void testAviatorBettingFlow() {
         WebElement leftSideBetInput = wait.until(ExpectedConditions.visibilityOfElementLocated(elements.leftSideBetInput));
 
-        if (canPlaceBet(leftSideBetInput)) {
+        if (leftSideBetInput.isDisplayed()) {
             inputBetAmount(elements.leftSideBetInput, ORIGINAL_TARGET);
         }
 
@@ -67,21 +107,18 @@ public class App implements Serializable {
                 AtomicBoolean clicked = new AtomicBoolean(false);
                 new Thread(() -> {
                     try {
-                        if (!clicked.get() && targetReached(button, ORIGINAL_TARGET, ORIGINAL_TARGET + 10.0)) {
+                        if (!clicked.get() && targetReached(button, ORIGINAL_TARGET + 20.0)) {
                             currentScore += ORIGINAL_TARGET;
                             if (clicked.compareAndSet(false, true)) {
                                 js.executeScript("arguments[0].click()", button);
                             }
                         }
-                    } catch (StaleElementReferenceException e) {
-                        System.err.println("⚠️ Stale element skipped.");
+                    } catch (StaleElementReferenceException ignored) {
+
                     }
                 }).start();
             }
         }
-
-       // System.out.println(checkWinStreak());
-
     }
 
     private void inputBetAmount(By locator, double amount) {
@@ -95,11 +132,9 @@ public class App implements Serializable {
                 input, String.format("%.02f", amount));
     }
 
-    public boolean targetReached(WebElement cashOutBtn, double stake, double targetWin) {
+    private boolean targetReached(WebElement cashOutBtn, double targetWin) {
         String text = cashOutBtn.getText();
         double currentReading = extractDoubleFromText(text);
-        System.out.printf("CS %.02f \nCR: %.02f ::: %s \nTW: %.02f \nStake: %.02f\n",
-                currentScore, currentReading, text, targetWin, stake);
         return currentReading + 1.0 >= targetWin;
     }
 
@@ -109,13 +144,15 @@ public class App implements Serializable {
         return matcher.find() ? Double.parseDouble(matcher.group().replace(",", "")) : 0.0;
     }
 
-    private boolean canPlaceBet(WebElement element) {
-        return element.isDisplayed();
-    }
-
     private boolean planeIsFlying() {
         return !driver.findElements(elements.betWaitBtns).isEmpty() ||
                 !driver.findElements(elements.activeBetBtns).isEmpty();
     }
 
+    @AfterClass
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 }
