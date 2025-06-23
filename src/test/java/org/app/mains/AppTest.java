@@ -35,8 +35,10 @@ public class AppTest {
         MutableCapabilities sauceOptions = new MutableCapabilities();
         sauceOptions.setCapability("build", "selenium-build-71ZG9");
         sauceOptions.setCapability("name", " Tests in multiple environments");
-        sauceOptions.setCapability("username","oauth-bonfacegithinji64-e7117");
-        sauceOptions.setCapability("access-key","1c10c32b-54b9-4518-aa41-a796c1add8eb");
+
+        sauceOptions.setCapability("username", System.getenv("SAUCE_USERNAME"));
+
+        sauceOptions.setCapability("access-key",System.getenv("SAUCE_ACCESS_KEY"));
         sauceOptions.setCapability("seleniumVersion", "4.30.0");
         sauceOptions.setCapability("tags","w3c-chrome-tests");
 
