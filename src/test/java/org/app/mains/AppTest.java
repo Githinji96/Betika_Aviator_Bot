@@ -30,15 +30,15 @@ public class AppTest {
 
     @Parameters("browser")
     @BeforeClass
-    public void setUp( String browserName) {
+    public void setUp(@Optional("chrome")String browserName) {
 
         MutableCapabilities sauceOptions = new MutableCapabilities();
         sauceOptions.setCapability("build", "selenium-build-71ZG9");
         sauceOptions.setCapability("name", " Tests in multiple environments");
 
-        sauceOptions.setCapability("username", System.getenv("SAUCE_USERNAME"));
+        sauceOptions.setCapability("username", USERNAME);
 
-        sauceOptions.setCapability("access-key",System.getenv("SAUCE_ACCESS_KEY"));
+        sauceOptions.setCapability("access-key",ACCESS_KEY);
         sauceOptions.setCapability("seleniumVersion", "4.30.0");
         sauceOptions.setCapability("tags","w3c-chrome-tests");
 
