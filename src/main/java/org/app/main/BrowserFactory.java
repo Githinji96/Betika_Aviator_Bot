@@ -1,24 +1,22 @@
 package org.app.main;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class BrowserFactory {
+class BrowserFactory {
 
     public static WebDriver getDriver(String browserName) {
         switch (browserName.toLowerCase()) {
             case "firefox":
                 WebDriverManager.firefoxdriver().setup();
-                return new FirefoxDriver();
+                return new org.openqa.selenium.firefox.FirefoxDriver();
             case "edge":
                 WebDriverManager.edgedriver().setup();
-                return new EdgeDriver();
+                return new org.openqa.selenium.edge.EdgeDriver();
             case "chrome":
             default:
                 WebDriverManager.chromedriver().setup();
-                return new ChromeDriver();
+                return new org.openqa.selenium.chrome.ChromeDriver();
         }
     }
 }

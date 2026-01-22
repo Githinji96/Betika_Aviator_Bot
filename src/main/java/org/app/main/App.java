@@ -25,14 +25,14 @@ public class App implements Serializable {
 
     private static Elements elements;
 
-    private final WebDriver driver;
+    private  WebDriver driver;
     private final WebDriverWait wait;
     private final JavascriptExecutor js;
 
     public App() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        js = (JavascriptExecutor) driver;
+        String browser = "chrome";
+        this.driver = BrowserFactory.getDriver(browser);
+        this.js = (JavascriptExecutor) driver;
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(30));
@@ -67,14 +67,14 @@ public class App implements Serializable {
                 AtomicBoolean clicked = new AtomicBoolean(false);
                 new Thread(() -> {
                     try {
-                        if (!clicked.get() && targetReached(button, ORIGINAL_TARGET, ORIGINAL_TARGET + 10.0)) {
+                        if (!clicked.get() && targetReached(button, ORIGINAL_TARGET, ORIGINAL_TARGET + 30.0)) {
                             currentScore += ORIGINAL_TARGET;
                             if (clicked.compareAndSet(false, true)) {
                                 js.executeScript("arguments[0].click()", button);
                             }
                         }
                     } catch (StaleElementReferenceException e) {
-                        System.err.println("⚠️ Stale element skipped.");
+                        System.err.println("️ Stale element skipped.");
                     }
                 }).start();
             }
