@@ -6,7 +6,7 @@ import org.openqa.selenium.support.FindBy;
 
 import java.util.*;
 public class Elements {
-    public By demoPlayBtn = By.className("purple");
+    public By demoPlayBtn = By.xpath("//button[@class='button account__payments__submit button button__secondary purple']");
 
 
     public By gameIframe = By.id("aviator-iframe");

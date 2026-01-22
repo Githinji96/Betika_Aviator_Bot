@@ -30,7 +30,7 @@ public class App implements Serializable {
     private final JavascriptExecutor js;
 
     public App() {
-        String browser = "chrome";
+        String browser = "edge";
         this.driver = BrowserFactory.getDriver(browser);
         this.js = (JavascriptExecutor) driver;
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
