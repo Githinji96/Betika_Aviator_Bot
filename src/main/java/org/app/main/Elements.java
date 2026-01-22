@@ -17,10 +17,10 @@ public class Elements {
 
     public By activeBetBtns = By.xpath("//button[contains(@class, 'cashout') and contains(@class, 'btn-warning')]");
 
-    public By leftSideBetInput = By.xpath("(//div[contains(@class, 'big')]//input)[1]");
+  //  public By leftSideBetInput = By.xpath("(//div[contains(@class, 'big')]//input)[1]");
+   public By leftSideBetInput = By.xpath("(//input[@type='text' and @inputmode='decimal'])[1]");
 
-
-    public By rightSideBetInput = By.xpath("(//div[contains(@class, 'big')]//input)[2]");
+    public By rightSideBetInput = By.xpath("(//input[@type='text' and @inputmode='decimal'])[2]");
 
 
 }

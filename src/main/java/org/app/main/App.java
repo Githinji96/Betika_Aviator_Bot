@@ -30,13 +30,16 @@ public class App implements Serializable {
     private final JavascriptExecutor js;
 
     public App() {
-        String browser = "edge";
+        String browser = "chrome"; // or chrome
         this.driver = BrowserFactory.getDriver(browser);
         this.js = (JavascriptExecutor) driver;
+
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
-        driver.manage().window().maximize();
+        driver.manage().window().setSize(new Dimension(1920, 1080));
+
         wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         elements = new Elements();
+
         navigateToGameBoard();
     }
 
