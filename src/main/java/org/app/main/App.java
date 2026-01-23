@@ -30,13 +30,12 @@ public class App implements Serializable {
     private final JavascriptExecutor js;
 
     public App() {
-        String browser = "chrome"; // or chrome
+        String browser = "Chrome"; // or chrome
         this.driver = BrowserFactory.getDriver(browser);
         this.js = (JavascriptExecutor) driver;
 
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
-        driver.manage().window().setSize(new Dimension(1920, 1080));
-
+       driver.manage().window().setSize(new Dimension(1920, 1080));
         wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         elements = new Elements();
 
@@ -45,12 +44,17 @@ public class App implements Serializable {
 
     private void navigateToGameBoard() {
         driver.get(URL);
-        driver.findElement(elements.demoPlayBtn).click();
+      //  driver.findElement(elements.demoPlayBtn).click();
+        WebElement demoBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(elements.demoPlayBtn)
+        );
+        js.executeScript("arguments[0].click()", demoBtn);
         WebElement iframe = driver.findElement(elements.gameIframe);
         driver.switchTo().frame(iframe);
     }
 
     public void run() {
+        switchToGameIframe();
         WebElement leftSideBetInput = wait.until(ExpectedConditions.visibilityOfElementLocated(elements.leftSideBetInput));
 
         if (canPlaceBet(leftSideBetInput)) {
@@ -120,5 +124,10 @@ public class App implements Serializable {
         return !driver.findElements(elements.betWaitBtns).isEmpty() ||
                 !driver.findElements(elements.activeBetBtns).isEmpty();
     }
+    private void switchToGameIframe() {
+        driver.switchTo().defaultContent();
+        wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(elements.gameIframe));
+    }
+
 
 }
