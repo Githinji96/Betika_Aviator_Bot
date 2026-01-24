@@ -5,6 +5,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    - cron: "0 21 * * *"   # Daily at midnight EAT (UTC 21:00)
 
 jobs:
   selenium-tests:
@@ -31,4 +33,6 @@ jobs:
 
       - name: Run Selenium tests with Maven (UI mode)
         run: |
-          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' mvn clean test
+          xvfb-run --auto-servernum \
+          --server-args='-screen 0 1920x1080x24' \
+          mvn clean test
